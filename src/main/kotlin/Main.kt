@@ -31,7 +31,11 @@ data class Post(
     val postSource: PostSource = PostSource(),
     val geo: Geo = Geo(),
     val donut: Donut = Donut(),
-    val attachments: Array<Attachment> = arrayOf(VideoAttachment(), PhotoAttachment(), AudioAttachment())
+    val attachments: Array<Attachment> = arrayOf( VideoAttachment(),
+                                                  PhotoAttachment(),
+                                                  AudioAttachment(),
+                                                  FileAttachment(),
+                                                  PresentAttachment())
 )
   {
     class Likes(
@@ -131,6 +135,29 @@ data class Audio(
     val artist: String? = null,
     val audioTitle: String? = null,
     val audioDuration: Int = 60)
+
+data class FileAttachment(
+    override var attachmentType: String = "file",
+    val file: File = File()): Attachment
+
+data class File(
+    val fileId: Int = 1,
+    val fileOwnerId: Int = 1,
+    val fileTitle: String? = null,
+    val exp: String? = null,
+    val fileSize: Int = 150)
+
+data class PresentAttachment(
+    override var attachmentType: String = "present",
+    val present: Present = Present()): Attachment
+
+data class Present(
+    val presentId: Int = 1,
+    val thumb_256: String? = null,
+    val thumb_96: String? = null,
+    val thumb_48: String? = null,
+    )
+
 object WallService {
     public var posts = emptyArray<Post>()
     public var lastId: Int = 0
