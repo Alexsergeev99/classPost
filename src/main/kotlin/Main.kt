@@ -31,7 +31,7 @@ data class Post(
     val postSource: PostSource = PostSource(),
     val geo: Geo = Geo(),
     val donut: Donut = Donut(),
-    val attachments: Array<Attachment> = arrayOf( Video(), Photo(), Audio())
+    val attachments: Array<Attachment> = arrayOf(VideoAttachment(), PhotoAttachment(), AudioAttachment())
 )
   {
     class Likes(
@@ -93,30 +93,44 @@ data class Post(
           var canPublishFreeCopy: Boolean = false,
           var editMode: String = "all"
       )
-      interface Attachment {
-          var attachmentType: String
-      }
-      class Video(override var attachmentType: String = "video",
-                  val videoId: Int = 1,
-                  val videoOwnerId: Int = 1,
-                  val videoTitle: String? = null,
-                  val duration: Int = 10,
-                  val description: String? = null):Attachment
-      class Photo(override var attachmentType: String = "photo",
-                  val photoId: Int = 1,
-                  val photoUserId: Int = 1,
-                  val photoText: String? = null,
-                  val photoOwnerId: Int = 1,
-                  val dateOfPhoto: Int? = null):Attachment
-      class Audio(override var attachmentType: String = "audio",
-                  val audioId: Int = 1,
-                  val audioOwnerId: Int = 1,
-                  val artist: String? = null,
-                  val audioTitle: String? = null,
-                  val audioDuration: Int = 60):Attachment {
 
-      }
   }
+interface Attachment {
+    var attachmentType: String
+}
+data class VideoAttachment(
+    override var attachmentType: String = "video",
+    val video: Video = Video(),
+):Attachment
+
+data class Video(
+    val videoId: Int = 1,
+    val videoOwnerId: Int = 1,
+    val videoTitle: String? = null,
+    val duration: Int = 10,
+    val description: String? = null
+)
+data class PhotoAttachment(
+    override var attachmentType: String = "photo",
+    val photo: Photo = Photo()): Attachment
+
+data class Photo(
+    val photoId: Int = 1,
+    val photoUserId: Int = 1,
+    val photoText: String? = null,
+    val photoOwnerId: Int = 1,
+    val dateOfPhoto: Int? = null
+)
+data class AudioAttachment(
+    override var attachmentType: String = "audio",
+    val audio: Audio = Audio()): Attachment
+
+data class Audio(
+    val audioId: Int = 1,
+    val audioOwnerId: Int = 1,
+    val artist: String? = null,
+    val audioTitle: String? = null,
+    val audioDuration: Int = 60)
 object WallService {
     public var posts = emptyArray<Post>()
     public var lastId: Int = 0
