@@ -185,14 +185,13 @@ object WallService {
         return false
     }
     fun createComment(postId: Int, comment: Comment): Comment {
-        for (id in posts) {
-            if (postId == lastId) {
+        for (element in posts) {
+            if (postId == element.id) {
                 comments += comment
-            } else {
-                throw PostNotFoundException("no post with this id")
+                return comments.last()
             }
         }
-        return comments.last()
+        throw PostNotFoundException(("Пост ID:$postId не найден"))
     }
 
     fun clear() {
@@ -232,6 +231,6 @@ fun main() {
     println(new.id)
     println(old.id)
     println(posts.last())
-    println(createComment(1, WallService.Comment("hello")))
+    println(createComment(45, WallService.Comment("hello")))
 }
 
