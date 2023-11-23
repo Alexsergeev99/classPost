@@ -1,7 +1,9 @@
 import WallService.add
-import WallService.lastId
+import WallService.createComment
+import WallService.id
 import WallService.posts
 import WallService.update
+import java.lang.RuntimeException
 
 data class Post(
     var id: Int = 0,
@@ -44,7 +46,7 @@ data class Post(
         var canPublish: Boolean = true,
         var userLikes: Boolean = false
     )
-    class Comments(
+    open class Comments(
         var counter: Int = 0,
         var canPost: Boolean = true,
         var groupsCanPost: Boolean = false,
@@ -157,10 +159,16 @@ data class Present(
     val thumb_96: String? = null,
     val thumb_48: String? = null,
     )
-
+class PostNotFoundException(message: String): RuntimeException(message)
 object WallService {
     public var posts = emptyArray<Post>()
+    public var comments = emptyArray<Comment>()
     public var lastId: Int = 0
+    public var id: Int = 0
+    data class Comment(
+        val text: String
+    )
+
 
     fun add(post: Post): Post {
         posts += post.copy(id = ++lastId)
@@ -176,10 +184,21 @@ object WallService {
         }
         return false
     }
+    fun createComment(postId: Int, comment: Comment): Comment {
+        for (id in posts) {
+            if (postId == lastId) {
+                comments += comment
+            } else {
+                throw PostNotFoundException("no post with this id")
+            }
+        }
+        return comments.last()
+    }
 
     fun clear() {
         lastId = 0
         posts = emptyArray()
+        comments = emptyArray()
     }
 
 }
@@ -212,5 +231,7 @@ fun main() {
     println(update(old, 45))
     println(new.id)
     println(old.id)
+    println(posts.last())
+    println(createComment(1, WallService.Comment("hello")))
 }
 
